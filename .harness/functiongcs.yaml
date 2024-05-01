@@ -3,3 +3,7 @@ service:
   identifier: functiongcs
   orgIdentifier: default
   projectIdentifier: default_project
+  serviceDefinition:
+    spec:
+      environmentType: GenTwo
+    type: GoogleCloudFunctions
