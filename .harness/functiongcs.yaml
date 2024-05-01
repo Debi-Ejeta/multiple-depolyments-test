@@ -1,0 +1,5 @@
+service:
+  name: function-gcs
+  identifier: functiongcs
+  orgIdentifier: default
+  projectIdentifier: default_project
