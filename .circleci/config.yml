@@ -1,0 +1,28 @@
+version: 2.1
+orbs:
+  node: circleci/node@4.0.0
+jobs:
+  build_and_test:
+    parameters:
+      function_dir:
+        type: string
+    docker:
+      - image: cimg/node:22.0.0
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: << parameters.function_dir >>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - << parameters.function_dir >>
+
+workflows:
+  version: 2
+  build_test_all_functions:
+    jobs:
+      - build_and_test:
+          matrix:
+            parameters:
+              function_dir: ["function-gcs", "function-http"] # List all directories
