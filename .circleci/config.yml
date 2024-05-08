@@ -28,7 +28,8 @@ jobs:
       - run:
           name: "Authenticate GCP"
           command: |
-            echo $GOOGLE_AUTH > ${HOME}/gcp-key.json
+            echo $GOOGLE_AUTH | jq '.' > ${HOME}/gcp-key.json
+            cat ${HOME}/gcp-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
       - run:
           name: "Deploy Function"
