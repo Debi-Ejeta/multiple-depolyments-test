@@ -1,22 +1,8 @@
 version: 2.1
 orbs:
   node: circleci/node@4.0.0
+
 jobs:
-  build_and_test:
-    parameters:
-      function_dir:
-        type: string
-    docker:
-      - image: cimg/node:22.0.0
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-          app-dir: << parameters.function_dir >>
-      - persist_to_workspace:
-          root: .
-          paths:
-            - << parameters.function_dir >>
   deploy_function:
     parameters:
       function_dir:
@@ -25,10 +11,8 @@ jobs:
         type: string
       trigger_event:
         type: string
-        default: ""
       trigger_resource:
         type: string
-        default: ""
       entry_point:
         type: string
     docker:
@@ -41,14 +25,6 @@ jobs:
             echo $GOOGLE_AUTH > ${HOME}/gcp-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
       - run:
-          name: "Print Matrix Variables"
-          command: |
-            echo "Function Directory: << parameters.function_dir >>"
-            echo "Trigger Type: << parameters.trigger_type >>"
-            echo "Trigger Event: << parameters.trigger_event >>"
-            echo "Trigger Resource: << parameters.trigger_resource >>"
-            echo "Entry Point: << parameters.entry_point >>"
-      - run:
           name: "Deploy Function"
           command: |
             if [ "<< parameters.trigger_type >>" = "http" ]; then
@@ -60,16 +36,17 @@ workflows:
   version: 2
   build_test_all_functions:
     jobs:
-      - build_and_test:
-          matrix:
-            parameters:
-              function_dir: ["helloGCS", "helloHttp"]
       - deploy_function:
           matrix:
             alias: deploy_specific_functions
             parameters:
-              function_dir: ["helloHttp", "helloGCS"]
-              trigger_type: ["http", "event"]
-              trigger_event: ["", "google.storage.object.finalize"]
-              trigger_resource: ["", "harness235"]
-              entry_point: ["helloHttp", "helloGCS"]
+              - function_dir: "helloHttp"
+                trigger_type: "http"
+                trigger_event: ""
+                trigger_resource: ""
+                entry_point: "helloHttp"
+              - function_dir: "helloGCS"
+                trigger_type: "event"
+                trigger_event: "google.storage.object.finalize"
+                trigger_resource: "harness235"
+                entry_point: "helloGCS"
