@@ -42,3 +42,7 @@ workflows:
           matrix:
             parameters:
               function_dir: ["function-gcs", "function-http"] # List all directories
+      - deploy_function:
+          matrix:
+            parameters:
+              function_dir: ["function-gcs", "function-http"] # List all directories
