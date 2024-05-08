@@ -1,8 +1,25 @@
 version: 2.1
+
 orbs:
   node: circleci/node@4.0.0
 
 jobs:
+  build_and_test:
+    parameters:
+      function_dir:
+        type: string
+    docker:
+      - image: cimg/node:22.0.0
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: << parameters.function_dir >>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - << parameters.function_dir >>
+
   deploy_function:
     parameters:
       function_dir:
@@ -11,13 +28,17 @@ jobs:
         type: string
       trigger_event:
         type: string
+        default: ""
       trigger_resource:
         type: string
+        default: ""
       entry_point:
         type: string
     docker:
       - image: google/cloud-sdk:latest
     steps:
+      - attach_workspace:
+          at: /workspace
       - checkout
       - run:
           name: "Authenticate GCP"
@@ -28,14 +49,18 @@ jobs:
           name: "Deploy Function"
           command: |
             if [ "<< parameters.trigger_type >>" = "http" ]; then
-              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-http --entry-point=<< parameters.entry_point >> --source=./functions/<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
+              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-http --entry-point=<< parameters.entry_point >> --source=/workspace/<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
             else
-              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-event << parameters.trigger_event >> --trigger-resource << parameters.trigger_resource >> --entry-point=<< parameters.entry_point >> --source=./functions/<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
+              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-event << parameters.trigger_event >> --trigger-resource << parameters.trigger_resource >> --entry-point=<< parameters.entry_point >> --source=/workspace/<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
 
 workflows:
   version: 2
   build_test_all_functions:
     jobs:
+      - build_and_test:
+          matrix:
+            parameters:
+              function_dir: ["helloGCS", "helloHttp"]
       - deploy_function:
           matrix:
             alias: deploy_specific_functions
