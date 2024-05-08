@@ -29,6 +29,7 @@ jobs:
           name: "Authenticate GCP"
           command: |
             echo $GOOGLE_AUTH
+            echo "I am here"
             # echo $GOOGLE_AUTH > ${HOME}/gcp-key.json
             # cat ${HOME}/gcp-key.json
             # gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
