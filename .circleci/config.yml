@@ -41,8 +41,8 @@ workflows:
       - build_and_test:
           matrix:
             parameters:
-              function_dir: ["function-gcs", "function-http"] # List all directories
+              function_dir: ["helloGCS", "helloHttp"] # List all directories
       - deploy_function:
           matrix:
             parameters:
-              function_dir: ["function-gcs"] # List all directories
+              function_dir: ["helloGCS"] # List all directories
