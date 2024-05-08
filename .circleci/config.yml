@@ -17,6 +17,15 @@ jobs:
           root: .
           paths:
             - << parameters.function_dir >>
+      - run:
+          name: "Authenticate GCP"
+          command: |
+            echo $GOOGLE_AUTH > ${HOME}/gcp-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
+      - run:
+          name: "Deploy Function"
+          command: |
+            gcloud functions deploy << parameters.function_dir >> --runtime nodejs14 --trigger-http --entry-point=myEntryPoint --region=us-central1 --allow-unauthenticated
 
 workflows:
   version: 2
