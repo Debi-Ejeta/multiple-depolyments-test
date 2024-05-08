@@ -21,6 +21,14 @@ jobs:
     parameters:
       function_dir:
         type: string
+      trigger_type:
+        type: string
+      trigger_event:
+        type: string
+        default: ""
+      trigger_resource:
+        type: string
+        default: ""
     docker:
       - image: google/cloud-sdk:latest
     steps:
@@ -33,7 +41,26 @@ jobs:
       - run:
           name: "Deploy Function"
           command: |
-            gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-event google.storage.object.finalize --trigger-resource harness235 --entry-point=helloGCS --source=./<< parameters.function_dir >> --region=us-east1 --project=new-project-422101
+            if [ "<< parameters.trigger_type >>" = "http" ]; then
+              gcloud functions deploy << parameters.function_dir >> \
+                --runtime nodejs16 \
+                --trigger-http \
+                --entry-point=<< parameters.function_dir >> \
+                --source=./<< parameters.function_dir >> \
+                --region=us-east1 \
+                --project=new-project-422101 \
+                --allow-unauthenticated
+            else
+              gcloud functions deploy << parameters.function_dir >> \
+                --runtime nodejs16 \
+                --trigger-event << parameters.trigger_event >> \
+                --trigger-resource << parameters.trigger_resource >> \
+                --entry-point=<< parameters.function_dir >> \
+                --source=./<< parameters.function_dir >> \
+                --region=us-east1 \
+                --project=new-project-422101 \
+                --allow-unauthenticated
+            fi
 workflows:
   version: 2
   build_test_all_functions:
@@ -45,4 +72,7 @@ workflows:
       - deploy_function:
           matrix:
             parameters:
-              function_dir: ["helloGCS"] # List all directories
+              function_dir: ["helloHttp", "helloGCS"] # List all directories
+              trigger_type: ["http", "event"]
+              trigger_event: ["", "google.storage.object.finalize"]
+              trigger_resource: ["", "harness235"]
