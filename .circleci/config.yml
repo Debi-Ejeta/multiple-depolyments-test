@@ -63,7 +63,11 @@ workflows:
       - deploy_function:
           matrix:
             parameters:
-              function_dir: ["helloHttp", "helloGCS"] # List all directories
-              trigger_type: ["http", "event"]
-              trigger_event: ["", "google.storage.object.finalize"]
-              trigger_resource: ["", "harness235"]
+              - function_dir: "helloHttp"
+                trigger_type: "http"
+                trigger_event: ""
+                trigger_resource: ""
+              - function_dir: "helloGCS"
+                trigger_type: "event"
+                trigger_event: "google.storage.object.finalize"
+                trigger_resource: "harness235"
