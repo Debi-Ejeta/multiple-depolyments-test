@@ -42,24 +42,9 @@ jobs:
           name: "Deploy Function"
           command: |
             if [ "<< parameters.trigger_type >>" = "http" ]; then
-              gcloud functions deploy << parameters.function_dir >> \
-                --runtime nodejs16 \
-                --trigger-http \
-                --entry-point=<< parameters.function_dir >> \
-                --source=./<< parameters.function_dir >> \
-                --region=us-east1 \
-                --project=new-project-422101 \
-                --allow-unauthenticated
+              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-http --entry-point=<< parameters.function_dir >> --source=./<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
             else
-              gcloud functions deploy << parameters.function_dir >> \
-                --runtime nodejs16 \
-                --trigger-event << parameters.trigger_event >> \
-                --trigger-resource << parameters.trigger_resource >> \
-                --entry-point=<< parameters.function_dir >> \
-                --source=./<< parameters.function_dir >> \
-                --region=us-east1 \
-                --project=new-project-422101 \
-                --allow-unauthenticated
+              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-event << parameters.trigger_event >> --trigger-resource << parameters.trigger_resource >> --entry-point=<< parameters.function_dir >> --source=./<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
             fi
 workflows:
   version: 2
