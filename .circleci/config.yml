@@ -1,5 +1,6 @@
 version: 2.1
-
+orbs:
+  node: circleci/node@4.0.0
 jobs:
   build_and_test:
     parameters:
@@ -67,13 +68,8 @@ workflows:
           matrix:
             alias: deploy_specific_functions
             parameters:
-              - function_dir: "helloHttp"
-                trigger_type: "http"
-                trigger_event: ""
-                trigger_resource: ""
-                entry_point: "helloHttp"
-              - function_dir: "helloGCS"
-                trigger_type: "event"
-                trigger_event: "google.storage.object.finalize"
-                trigger_resource: "harness235"
-                entry_point: "helloGCS"
+              function_dir: ["helloHttp", "helloGCS"]
+              trigger_type: ["http", "event"]
+              trigger_event: ["", "google.storage.object.finalize"]
+              trigger_resource: ["", "harness235"]
+              entry_point: ["helloHttp", "helloGCS"]
