@@ -35,7 +35,7 @@ jobs:
       - run:
           name: "Deploy Function"
           command: |
-            gcloud functions deploy << parameters.function_dir >> --runtime nodejs14 --trigger-event google.storage.object.finalize --trigger-resource harness235 --entry-point=helloGCS --region=us-east1 --project=new-project
+            gcloud functions deploy << parameters.function_dir >> --runtime nodejs14 --trigger-event google.storage.object.finalize --trigger-resource harness235 --entry-point=helloGCS --region=us-east1 --project=new-project-422101
 workflows:
   version: 2
   build_test_all_functions:
