@@ -39,6 +39,13 @@ jobs:
             echo $GOOGLE_AUTH > ${HOME}/gcp-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
       - run:
+          name: "Print Matrix Variables"
+          command: |
+            echo "Function Directory: << parameters.function_dir >>"
+            echo "Trigger Type: << parameters.trigger_type >>"
+            echo "Trigger Event: << parameters.trigger_event >>"
+            echo "Trigger Resource: << parameters.trigger_resource >>"
+      - run:
           name: "Deploy Function"
           command: |
             if [ "<< parameters.trigger_type >>" = "http" ]; then
