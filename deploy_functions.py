@@ -6,7 +6,7 @@ def deploy_function(config):
     function_dir = config['function_dir']
     entry_point = config['entry_point']
     trigger_type = config['trigger_type']
-    source_path = f'./functions/{function_dir}'
+    source_path = f'./{function_dir}'
 
     command = [
         'gcloud', 'functions', 'deploy', function_dir,
