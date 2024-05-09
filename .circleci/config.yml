@@ -6,7 +6,6 @@ jobs:
       config:
         type: string
     docker:
-      - image: cimg/python:3.8
       - image: google/cloud-sdk:latest
     steps:
       - checkout
