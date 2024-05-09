@@ -16,7 +16,7 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
       - run:
           name: "Deploy Function"
-          command: python3 ./deploy_function.py '<< parameters.config >>'
+          command: python3 ./deploy_functions.py '<< parameters.config >>'
 
 workflows:
   version: 2
