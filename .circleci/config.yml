@@ -16,7 +16,11 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
       - run:
           name: "Deploy Function"
-          command: python3 ./deploy_functions.py '<< parameters.config >>'
+          command: |
+            if [ "<< parameters.trigger_type >>" = "http" ]; then
+              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-http --entry-point=<< parameters.entry_point >> --source=/workspace/<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
+            else
+              gcloud functions deploy << parameters.function_dir >> --runtime nodejs16 --trigger-event << parameters.trigger_event >> --trigger-resource << parameters.trigger_resource >> --entry-point=<< parameters.entry_point >> --source=/workspace/<< parameters.function_dir >> --region=us-east1 --project=new-project-422101 --allow-unauthenticated
 
 workflows:
   version: 2
