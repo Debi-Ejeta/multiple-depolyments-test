@@ -28,8 +28,8 @@ workflows:
           matrix:
             parameters:
               function_config: [
-                '{"project_id": "new-project", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
-                '{"project_id": "new-project", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
+                '{"project_id": "new-project-422101", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
+                '{"project_id": "new-project-422101", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
               ]
           filters:
             branches:
@@ -43,8 +43,8 @@ workflows:
           matrix:
             parameters:
               function_config: [
-                '{"project_id": "new-project", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
-                '{"project_id": "new-project", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
+                '{"project_id": "new-project-422101", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
+                '{"project_id": "new-project-422101", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
               ]
           filters:
             branches:
