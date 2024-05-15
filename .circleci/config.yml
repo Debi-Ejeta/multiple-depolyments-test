@@ -3,8 +3,6 @@ version: 2.1
 jobs:
   deploy_function:
     parameters:
-      project_id:
-        type: string
       function_config:
         type: string
     docker:
@@ -25,12 +23,14 @@ workflows:
   dev_deployment:
     jobs:
       - deploy_function:
-          name: "Deploy to Project1"
-          context: dev-context  # Contexts are used to securely pass environment-specific variables
+          name: "Deploy to Dev"
+          context: dev-context
           matrix:
             parameters:
-              project_id: ["project1"]
-              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+              function_config: [
+                '{"project_id": "project1", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
+                '{"project_id": "project1", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
+              ]
           filters:
             branches:
               only: dev
@@ -42,8 +42,10 @@ workflows:
           context: qa-context
           matrix:
             parameters:
-              project_id: ["new-project"]
-              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+              function_config: [
+                '{"project_id": "project2", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
+                '{"project_id": "project2", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
+              ]
           filters:
             branches:
               only: main
@@ -58,8 +60,10 @@ workflows:
           context: preprod-context
           matrix:
             parameters:
-              project_id: ["preprod-project"]
-              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+              function_config: [
+                '{"project_id": "project3", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
+                '{"project_id": "project3", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
+              ]
           requires:
             - "Hold for Preprod"
           filters:
@@ -76,11 +80,12 @@ workflows:
           context: prod-context
           matrix:
             parameters:
-              project_id: ["prod-project"]
-              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+              function_config: [
+               '{"project_id": "project4", "function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
+               '{"project_id": "project4", "function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
+              ]
           requires:
             - "Hold for Prod"
           filters:
             branches:
               only: main
-
