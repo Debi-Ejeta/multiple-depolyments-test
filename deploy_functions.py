@@ -3,6 +3,7 @@ import subprocess
 import json
 
 def deploy_function(config):
+    project_id = config['project_id']
     function_dir = config['function_dir']
     entry_point = config['entry_point']
     trigger_type = config['trigger_type']
@@ -10,11 +11,11 @@ def deploy_function(config):
 
     command = [
         'gcloud', 'functions', 'deploy', function_dir,
-        '--runtime', 'nodejs16',
+        '--runtime', 'nodejs16',  # Ensure runtime version matches your function's requirements
         '--entry-point', entry_point,
         '--source', source_path,
-        '--region', 'us-east1',
-        '--project', 'new-project-422101',
+        '--region', 'us-east1',  # Adjust the region as necessary
+        '--project', project_id,
         '--allow-unauthenticated'
     ]
 
