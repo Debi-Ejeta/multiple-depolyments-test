@@ -52,8 +52,6 @@ workflows:
       - hold:
           type: approval
           name: "Hold for Preprod"
-          requires:
-            - "Deploy to QA"
           filters:
             branches:
               only: main
@@ -73,8 +71,6 @@ workflows:
               only: main
       - hold:
           type: approval
-          requires:
-            - "Deploy to Preprod"
           name: "Hold for Prod"
           filters:
             branches:
