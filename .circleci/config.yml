@@ -3,7 +3,9 @@ version: 2.1
 jobs:
   deploy_function:
     parameters:
-      config:
+      project_id:
+        type: string
+      function_config:
         type: string
     docker:
       - image: google/cloud-sdk:latest
@@ -16,16 +18,69 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
       - run:
           name: "Deploy Function"
-          command: python3 ./deploy_functions.py '<< parameters.config >>'
+          command: python3 ./deploy_functions.py '<< parameters.function_config >>'
 
 workflows:
   version: 2
-  build_and_deploy:
+  dev_deployment:
     jobs:
       - deploy_function:
+          name: "Deploy to Project1"
+          context: dev-context  # Contexts are used to securely pass environment-specific variables
           matrix:
             parameters:
-              config: [
-                '{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}',
-                '{"function_dir": "helloGCS", "trigger_type": "event", "trigger_event": "google.storage.object.finalize", "trigger_resource": "harness235", "entry_point": "helloGCS"}'
-              ]
+              project_id: ["project1"]
+              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+          filters:
+            branches:
+              only: dev
+
+  main_deployment:
+    jobs:
+      - deploy_function:
+          name: "Deploy to QA"
+          context: qa-context
+          matrix:
+            parameters:
+              project_id: ["new-project"]
+              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+          filters:
+            branches:
+              only: main
+      - hold:
+          type: approval
+          name: "Hold for Preprod"
+          filters:
+            branches:
+              only: main
+      - deploy_function:
+          name: "Deploy to Preprod"
+          context: preprod-context
+          matrix:
+            parameters:
+              project_id: ["preprod-project"]
+              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+          requires:
+            - "Hold for Preprod"
+          filters:
+            branches:
+              only: main
+      - hold:
+          type: approval
+          name: "Hold for Prod"
+          filters:
+            branches:
+              only: main
+      - deploy_function:
+          name: "Deploy to Prod"
+          context: prod-context
+          matrix:
+            parameters:
+              project_id: ["prod-project"]
+              function_config: ['{"function_dir": "helloHttp", "trigger_type": "http", "trigger_event": "", "trigger_resource": "", "entry_point": "helloHttp"}']
+          requires:
+            - "Hold for Prod"
+          filters:
+            branches:
+              only: main
+
